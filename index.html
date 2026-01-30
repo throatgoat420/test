@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Gym Weight Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <button type="button" class="header-btn header-back" aria-label="Back">←</button>
+      <h1 class="header-title" id="header-title">Home</h1>
+      <button type="button" class="header-btn header-menu" aria-label="Menu">⋮</button>
+    </header>
+
+    <div class="panels-wrap" id="panels-wrap">
+      <div class="panels" id="panels">
+        <!-- Home -->
+        <section class="panel panel-home" id="panel-home" data-panel="home">
+          <div class="panel-inner">
+            <div class="greeting">
+              <p class="greeting-hello">Hello, <span id="user-name">Athlete</span></p>
+              <p class="greeting-date" id="home-date">Today</p>
+            </div>
+            <div class="daily-challenge-card">
+              <h2 class="daily-challenge-title">Daily Challenge</h2>
+              <p class="daily-challenge-sub">Log your lifts before your next session</p>
+              <a href="#" class="daily-challenge-cta" data-goto="training">Go to Training →</a>
+            </div>
+            <div class="home-stats">
+              <div class="home-stat-card">
+                <span class="home-stat-value" id="home-exercise-count">0</span>
+                <span class="home-stat-label">Exercises</span>
+              </div>
+              <div class="home-stat-card">
+                <span class="home-stat-value" id="home-done-count">0</span>
+                <span class="home-stat-label">Done today</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Training -->
+        <section class="panel panel-training" id="panel-training" data-panel="training">
+          <div class="panel-inner">
+            <div class="date-selector">
+              <div class="date-dots" id="date-dots"></div>
+            </div>
+            <div class="section-head">
+              <h2 class="section-title">Daily Program</h2>
+              <button type="button" class="link-btn" id="btn-add-exercise">+ Add exercise</button>
+            </div>
+            <div class="quick-add-bar">
+              <span class="quick-add-label">Tap amount, then tap a lift:</span>
+              <div class="quick-add-buttons">
+                <button type="button" class="quick-add-btn" data-increment="1.25">+1.25</button>
+                <button type="button" class="quick-add-btn" data-increment="2.5">+2.5</button>
+                <button type="button" class="quick-add-btn" data-increment="5">+5</button>
+                <button type="button" class="quick-add-btn" data-increment="10">+10</button>
+              </div>
+            </div>
+            <div class="exercise-list" id="exercise-list"></div>
+          </div>
+        </section>
+
+        <!-- Nutrition -->
+        <section class="panel panel-nutrition" id="panel-nutrition" data-panel="nutrition">
+          <div class="panel-inner">
+            <h2 class="page-title">Nutrition</h2>
+            <div class="nutrition-card">
+              <p class="nutrition-placeholder">Track calories and macros here.</p>
+              <p class="nutrition-hint">Set a daily goal and log meals to stay on track.</p>
+            </div>
+            <div class="nutrition-summary">
+              <div class="nutrition-stat">
+                <span class="nutrition-stat-value" id="nutrition-calories">0</span>
+                <span class="nutrition-stat-label">kcal today</span>
+              </div>
+              <div class="nutrition-stat">
+                <span class="nutrition-stat-value" id="nutrition-goal">2000</span>
+                <span class="nutrition-stat-label">daily goal</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Account -->
+        <section class="panel panel-account" id="panel-account" data-panel="account">
+          <div class="panel-inner">
+            <h2 class="page-title">Account</h2>
+            <div class="account-card">
+              <label class="account-label">Your name</label>
+              <input type="text" class="account-input" id="account-name" placeholder="Enter your name" maxlength="30">
+            </div>
+            <div class="account-card">
+              <p class="account-info">Weights and exercises are saved in this browser. Clearing site data will reset everything.</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <nav class="bottom-nav" id="bottom-nav">
+      <button type="button" class="bottom-nav-item" data-panel="home" aria-label="Home">
+        <span class="bottom-nav-icon">⌂</span>
+        <span class="bottom-nav-label">Home</span>
+      </button>
+      <button type="button" class="bottom-nav-item bottom-nav-item--active" data-panel="training" aria-label="Training">
+        <span class="bottom-nav-icon">⚡</span>
+        <span class="bottom-nav-label">Training</span>
+      </button>
+      <button type="button" class="bottom-nav-item" data-panel="nutrition" aria-label="Nutrition">
+        <span class="bottom-nav-icon">🥗</span>
+        <span class="bottom-nav-label">Nutrition</span>
+      </button>
+      <button type="button" class="bottom-nav-item" data-panel="account" aria-label="Account">
+        <span class="bottom-nav-icon">👤</span>
+        <span class="bottom-nav-label">Account</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- Add exercise modal -->
+  <div class="modal-overlay" id="modal-add-exercise" aria-hidden="true">
+    <div class="modal" id="modal-content">
+      <h3 class="modal-title">Add exercise</h3>
+      <label class="modal-label">Name</label>
+      <input type="text" class="modal-input" id="modal-exercise-name" placeholder="e.g. Bench Press" maxlength="50">
+      <label class="modal-label">Starting weight (kg)</label>
+      <input type="number" class="modal-input" id="modal-exercise-weight" placeholder="0" min="0" step="0.5" inputmode="decimal">
+      <p class="modal-hint">Weight must be a whole number or .5 (e.g. 60 or 62.5)</p>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="modal-cancel">Cancel</button>
+        <button type="button" class="btn btn-primary" id="modal-save">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="index.js"></script>
+</body>
+</html>
