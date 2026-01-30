@@ -16,12 +16,24 @@
   --shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
   --radius: 14px;
   --radius-sm: 10px;
+  /* Safe areas for notches, home indicator, rounded corners */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+html {
+  min-height: 100vh;
+  min-height: 100dvh;
+  -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
 }
 
 body {
@@ -32,15 +44,19 @@ body {
     radial-gradient(ellipse 60% 40% at 100% 100%, rgba(123, 104, 238, 0.06), transparent);
   color: var(--text);
   min-height: 100vh;
+  min-height: 100dvh;
   line-height: 1.5;
-  padding-bottom: 100px;
+  padding: var(--safe-top) var(--safe-right) 0 var(--safe-left);
+  padding-bottom: calc(100px + var(--safe-bottom));
   overflow-x: hidden;
 }
 
 .app {
   min-height: 100vh;
+  min-height: 100dvh;
   max-width: 480px;
   margin: 0 auto;
+  width: 100%;
 }
 
 /* Header */
@@ -48,7 +64,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 1.25rem;
+  padding: max(1rem, var(--safe-top)) 1.25rem 1rem;
   background: rgba(10, 10, 12, 0.85);
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
@@ -96,6 +112,7 @@ body {
   width: 25%;
   flex-shrink: 0;
   min-height: calc(100vh - 140px);
+  min-height: calc(100dvh - 140px);
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
@@ -549,16 +566,18 @@ body {
 /* Bottom nav - floating glass bar */
 .bottom-nav {
   position: fixed;
-  bottom: 1rem;
-  left: 50%;
-  transform: translateX(-50%);
-  width: calc(100% - 2rem);
+  bottom: max(1rem, var(--safe-bottom));
+  left: max(1rem, var(--safe-left));
+  right: max(1rem, var(--safe-right));
+  width: auto;
   max-width: 420px;
+  margin-left: auto;
+  margin-right: auto;
   display: flex;
   justify-content: space-around;
   align-items: center;
   padding: 0.5rem 0.5rem 0.75rem;
-  padding-bottom: max(0.75rem, calc(0.75rem + env(safe-area-inset-bottom)));
+  padding-bottom: max(0.75rem, calc(0.75rem + var(--safe-bottom)));
   border-radius: 24px;
   background: rgba(20, 20, 24, 0.72);
   -webkit-backdrop-filter: blur(20px);
@@ -635,7 +654,7 @@ body {
   align-items: center;
   justify-content: center;
   z-index: 100;
-  padding: 1rem;
+  padding: max(1rem, var(--safe-top)) max(1rem, var(--safe-right)) max(1rem, var(--safe-bottom)) max(1rem, var(--safe-left));
   pointer-events: none;
 }
 
@@ -724,12 +743,45 @@ body {
   background: var(--accent-strong);
 }
 
+/* Prevent iOS zoom on input focus (inputs need at least 16px) */
+@media (max-width: 768px) {
+  .weight-input,
+  .modal-input,
+  .account-input {
+    font-size: 16px;
+  }
+}
+
+/* Small phones: ensure touch targets and readable text */
+@media (max-width: 360px) {
+  .panel-inner {
+    padding: 1rem 1rem 1.5rem;
+  }
+
+  .exercise-btn,
+  .quick-add-btn {
+    padding: 0.5rem 0.6rem;
+    font-size: 0.7rem;
+  }
+
+  .bottom-nav-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+
+  .bottom-nav-item {
+    padding: 0.4rem 0.5rem;
+    font-size: 0.65rem;
+  }
+}
+
 @media (min-width: 520px) {
   .app {
     box-shadow: 0 0 0 1px var(--border);
   }
 
   .bottom-nav {
-    bottom: 1.25rem;
+    bottom: max(1.25rem, var(--safe-bottom));
   }
 }
