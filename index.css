@@ -428,6 +428,19 @@ body {
   font-weight: 500;
 }
 
+.weight-picker {
+  font-family: inherit;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  background: var(--bg);
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  padding: 0.35rem 0.75rem;
+  min-height: 36px;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
 .exercise-actions {
   display: flex;
   align-items: center;

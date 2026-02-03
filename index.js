@@ -261,27 +261,22 @@ function createExerciseCard(exercise) {
             )}" data-exercise-id="${exercise.id}" aria-label="Weight in kg">
             <span class="weight-unit">kg</span>
           </div>
+          <select class="weight-picker" aria-label="Select weight" data-exercise-id="${
+            exercise.id
+          }"></select>
         </div>
       </div>
     </div>
-    <div class="exercise-actions">
-      <div class="exercise-increments">
-        <button type="button" class="exercise-btn add-1-25" data-amount="1.25">+1.25</button>
-        <button type="button" class="exercise-btn add-2-5" data-amount="2.5">+2.5</button>
-        <button type="button" class="exercise-btn add-5" data-amount="5">+5</button>
-        <button type="button" class="exercise-btn add-10" data-amount="10">+10</button>
-        <button type="button" class="exercise-btn exercise-btn--decrease" data-amount="2.5">−2.5</button>
-        ${
-          exercise.custom
-            ? '<button type="button" class="exercise-btn exercise-btn--delete" data-delete aria-label="Remove exercise">✕</button>'
-            : ""
-        }
-      </div>
-    </div>
+    ${
+      exercise.custom
+        ? '<button type="button" class="exercise-delete" data-delete aria-label="Remove exercise">✕</button>'
+        : ""
+    }
   `;
 
   const inputEl = card.querySelector(".weight-input");
   const checkbox = card.querySelector(".exercise-checkbox");
+  const pickerEl = card.querySelector(".weight-picker");
 
   const updateInput = (withFeedback = false) => {
     inputEl.value = formatWeight(getWeight(exercise.id));
@@ -315,19 +310,6 @@ function createExerciseCard(exercise) {
     }
   });
 
-  card.querySelectorAll(".exercise-btn[data-amount]").forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      const amount = parseFloat(btn.dataset.amount);
-      if (btn.classList.contains("exercise-btn--decrease")) {
-        subtractWeight(exercise.id, amount);
-      } else {
-        addWeight(exercise.id, amount);
-      }
-      updateInput(true);
-    });
-  });
-
   const deleteBtn = card.querySelector("[data-delete]");
   if (deleteBtn) {
     deleteBtn.addEventListener("click", () => {
@@ -352,12 +334,34 @@ function createExerciseCard(exercise) {
 
   // Mark this card as the "current" one when interacting with it
   const markActive = () => setActiveExercise(exercise.id);
-  card.addEventListener("click", (evt) => {
-    // Skip when tapping increment buttons – handled via their own feedback
-    if (evt.target.closest(".exercise-btn")) return;
-    markActive();
-  });
+  card.addEventListener("click", markActive);
   inputEl.addEventListener("focus", markActive);
+
+  // Populate and wire up the weight picker
+  if (pickerEl) {
+    // Only build options once per picker
+    for (let w = 1; w <= 100; w += 0.5) {
+      const opt = document.createElement("option");
+      const rounded = roundToHalf(w);
+      opt.value = formatWeight(rounded);
+      opt.textContent = formatWeight(rounded);
+      pickerEl.appendChild(opt);
+    }
+
+    const roundedCurrent = roundToHalf(currentWeight);
+    if (roundedCurrent >= 1 && roundedCurrent <= 100) {
+      pickerEl.value = formatWeight(roundedCurrent);
+    } else {
+      pickerEl.value = "";
+    }
+
+    pickerEl.addEventListener("change", () => {
+      const v = parseFloat(pickerEl.value);
+      if (Number.isNaN(v)) return;
+      setWeight(exercise.id, v);
+      updateInput(true);
+    });
+  }
 
   return card;
 }
@@ -384,6 +388,26 @@ let pendingIncrement = null;
 document.querySelectorAll(".quick-add-btn").forEach((btn) => {
   btn.addEventListener("click", () => {
     const amount = parseFloat(btn.dataset.increment);
+    // If multiple exercises are marked done, apply increment to all of them immediately
+    const doneCards = document.querySelectorAll(".exercise-card.exercise-done");
+    if (doneCards.length > 0) {
+      doneCards.forEach((card) => {
+        const id = card.dataset.exerciseId;
+        const newWeight = addWeight(id, amount);
+        const input = card.querySelector(".weight-input");
+        if (input) input.value = formatWeight(newWeight);
+        card.classList.remove("bump");
+        // eslint-disable-next-line no-unused-expressions
+        card.offsetHeight;
+        card.classList.add("bump");
+      });
+      showToast(
+        `Updated ${doneCards.length} exercise${doneCards.length > 1 ? "s" : ""}`
+      );
+      return;
+    }
+
+    // Fallback: keep old flow (tap amount, then tap a single card)
     pendingIncrement = amount;
     document
       .querySelectorAll(".quick-add-btn")
