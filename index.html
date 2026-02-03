@@ -106,7 +106,7 @@
 
     <nav class="bottom-nav" id="bottom-nav">
       <button type="button" class="bottom-nav-item" data-panel="home" aria-label="Home">
-        <span class="bottom-nav-icon">⌂</span>
+        <span class="bottom-nav-icon">🏠</span>
         <span class="bottom-nav-label">Home</span>
       </button>
       <button type="button" class="bottom-nav-item bottom-nav-item--active" data-panel="training" aria-label="Training">
@@ -139,6 +139,38 @@
       </div>
     </div>
   </div>
+
+  <!-- Settings modal -->
+  <div class="modal-overlay" id="modal-settings" aria-hidden="true">
+    <div class="modal modal-settings">
+      <h3 class="modal-title">Settings</h3>
+      <div class="settings-list">
+        <button type="button" class="settings-item" data-settings-action="clear-exercises">
+          <div class="settings-item-text">
+            <span class="settings-item-title">Remove all exercises</span>
+            <span class="settings-item-sub">Clears exercise weights, done status and custom lifts only</span>
+          </div>
+        </button>
+        <button type="button" class="settings-item" data-settings-action="set-all-weights">
+          <div class="settings-item-text">
+            <span class="settings-item-title">Set a weight for all exercises</span>
+            <span class="settings-item-sub">Apply one starting weight to every exercise</span>
+          </div>
+        </button>
+        <button type="button" class="settings-item settings-item--danger" data-settings-action="reset-all">
+          <div class="settings-item-text">
+            <span class="settings-item-title">Reset everything to default</span>
+            <span class="settings-item-sub">Full reset including name, exercises and nutrition</span>
+          </div>
+        </button>
+      </div>
+      <div class="modal-actions modal-actions--separated">
+        <button type="button" class="btn btn-ghost" id="modal-settings-close">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="app-toast" aria-live="polite"></div>
 
   <script src="index.js"></script>
 </body>

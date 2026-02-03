@@ -82,11 +82,17 @@ body {
   color: var(--text-muted);
   cursor: pointer;
   font-size: 1.25rem;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.18s ease, transform 0.12s ease;
 }
 
 .header-menu {
   color: var(--text);
   font-weight: 700;
+}
+
+.header-btn:active {
+  transform: scale(0.9);
 }
 
 .header-title {
@@ -297,11 +303,12 @@ body {
   font-family: inherit;
   font-size: 0.8rem;
   font-weight: 600;
-  padding: 0.4rem 0.75rem;
+  padding: 0.55rem 0.9rem;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: transform 0.1s ease, box-shadow 0.15s ease;
+  min-height: 44px;
 }
 
 .quick-add-btn:hover {
@@ -332,12 +339,17 @@ body {
   display: flex;
   align-items: center;
   gap: 1rem;
-  transition: background 0.2s ease, border-color 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.18s ease;
 }
 
 .exercise-card:hover {
   background: var(--bg-card-hover);
   border-color: rgba(124, 255, 107, 0.25);
+}
+
+.exercise-card--active {
+  border-color: rgba(124, 255, 107, 0.6);
+  box-shadow: 0 0 0 1px rgba(124, 255, 107, 0.4);
 }
 
 .exercise-card-left {
@@ -349,18 +361,19 @@ body {
 }
 
 .exercise-checkbox {
-  width: 22px;
-  height: 22px;
+  width: 26px;
+  height: 26px;
   border: 2px solid var(--border);
   border-radius: 6px;
   flex-shrink: 0;
   cursor: pointer;
-  transition: border-color 0.2s, background 0.2s;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
 }
 
 .exercise-card.exercise-done .exercise-checkbox {
   background: var(--accent);
   border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-dim);
 }
 
 .exercise-info {
@@ -433,11 +446,12 @@ body {
   font-family: inherit;
   font-size: 0.75rem;
   font-weight: 600;
-  padding: 0.4rem 0.6rem;
+  padding: 0.55rem 0.7rem;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: transform 0.1s ease, background 0.15s ease;
+  min-height: 44px;
 }
 
 .exercise-btn:hover {
@@ -650,17 +664,21 @@ body {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.7);
-  display: none;
+  display: flex;
   align-items: center;
   justify-content: center;
   z-index: 100;
   padding: max(1rem, var(--safe-top)) max(1rem, var(--safe-right)) max(1rem, var(--safe-bottom)) max(1rem, var(--safe-left));
   pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.22s ease-out, visibility 0.22s ease-out;
 }
 
 .modal-overlay.is-open {
-  display: flex;
   pointer-events: auto;
+  opacity: 1;
+  visibility: visible;
 }
 
 .modal {
@@ -670,6 +688,12 @@ body {
   padding: 1.5rem;
   width: 100%;
   max-width: 340px;
+  transform: translateY(6px);
+  transition: transform 0.22s ease-out;
+}
+
+.modal-overlay.is-open .modal {
+  transform: translateY(0);
 }
 
 .modal-title {
@@ -714,6 +738,12 @@ body {
   justify-content: flex-end;
 }
 
+.modal-actions--separated {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
 .btn {
   font-family: inherit;
   font-size: 0.9rem;
@@ -723,6 +753,7 @@ body {
   cursor: pointer;
   border: none;
   transition: background 0.2s, color 0.2s;
+  min-height: 44px;
 }
 
 .btn-ghost {
@@ -741,6 +772,105 @@ body {
 
 .btn-primary:hover {
   background: var(--accent-strong);
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(80px + var(--safe-bottom));
+  transform: translateX(-50%) translateY(8px);
+  padding: 0.6rem 1rem;
+  border-radius: 999px;
+  background: rgba(20, 20, 24, 0.96);
+  color: var(--text);
+  font-size: 0.8rem;
+  font-weight: 500;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: 120;
+  transition: opacity 0.22s ease-out, transform 0.22s ease-out, visibility 0.22s ease-out;
+}
+
+.toast--visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Settings */
+.modal-settings {
+  max-width: 380px;
+}
+
+.settings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.settings-item {
+  display: flex;
+  width: 100%;
+  text-align: left;
+  padding: 0.7rem 0.2rem;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.settings-item:hover {
+  background: rgba(255, 255, 255, 0.02);
+  transform: translateY(-1px);
+}
+
+.settings-item-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.settings-item-title {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.settings-item-sub {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.settings-item--danger .settings-item-title {
+  color: #f97373;
+}
+
+.settings-item--danger:hover {
+  background: rgba(249, 115, 115, 0.08);
+}
+
+/* Exercise feedback bump */
+.exercise-card.bump {
+  animation: exercise-bump 220ms ease-out;
+}
+
+@keyframes exercise-bump {
+  0% {
+    transform: translateY(0);
+    box-shadow: none;
+  }
+  40% {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
+  }
+  100% {
+    transform: translateY(0);
+    box-shadow: none;
+  }
 }
 
 /* Prevent iOS zoom on input focus (inputs need at least 16px) */
